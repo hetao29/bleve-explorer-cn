@@ -31,7 +31,8 @@ class bleve{
 		)
 	);
 
-	public function __construct($gateway){
+	public function __construct($gateway,$dict){
+		$this->options['analysis']['tokenizers']['scws']['dict']=$dict;
 		$slash = $gateway{strlen($gateway)-1};
 		$this->gateway = $slash!="/"?$gateway:chop($gateway,"/");
 	}
@@ -125,8 +126,10 @@ class bleve{
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 		$data = curl_exec($ch);
+		var_dump($data);
 		$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		$json_data = json_decode($data);
+		var_dump($json_data);
 		curl_close($ch);
 		return ($httpcode>=200 && $httpcode<300) ? ($json_data == NULL?$data:$json_data): false;
 	}
