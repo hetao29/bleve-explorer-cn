@@ -111,8 +111,8 @@ class bleve{
 		return $this->exec($url,$params);
 	}
 	private function exec($url,$post_data,$method="GET"){
-		if($this->ch==null){
-			$this->ch = curl_init();
+		if(self::$ch==null){
+			self::$ch = curl_init();
 		}
 		$method=strtoupper($method);
 		if($method=="GET"){
@@ -121,15 +121,15 @@ class bleve{
 			if(is_array($post_data) || is_object($post_data)){
 				$post_data=json_encode($post_data);
 			}
-			curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $method);
-			curl_setopt($this->ch, CURLOPT_POSTFIELDS, $post_data);
+			curl_setopt(self::$ch, CURLOPT_CUSTOMREQUEST, $method);
+			curl_setopt(self::$ch, CURLOPT_POSTFIELDS, $post_data);
 		}
-		curl_setopt($this->ch, CURLOPT_URL, $url);
-		curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 10);
-		curl_setopt($this->ch, CURLOPT_TIMEOUT, 10);
-		$data = curl_exec($this->ch);
-		$httpcode = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
+		curl_setopt(self::$ch, CURLOPT_URL, $url);
+		curl_setopt(self::$ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt(self::$ch, CURLOPT_CONNECTTIMEOUT, 10);
+		curl_setopt(self::$ch, CURLOPT_TIMEOUT, 10);
+		$data = curl_exec(self::$ch);
+		$httpcode = curl_getinfo(self::$ch, CURLINFO_HTTP_CODE);
 		$json_data = json_decode($data);
 		return ($httpcode>=200 && $httpcode<300) ? ($json_data == NULL?$data:$json_data): false;
 	}
