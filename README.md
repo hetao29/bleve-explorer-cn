@@ -54,6 +54,13 @@ mkdir data
 make start
 cat log/*
 ```
+
+## 使用Web 接口
+### 选择默认 cn 分析器
+打开 http://localhost:8095/
+新建 index，在Advanced -> Default Analyzer -> 选择 cn
+就这样就 OK 了
+
 ## 使用PHP API
 ### 参考方法
-打开 php 目录下的文件
+打开 php 目录下的文件 test.php 和 bleve.class.php 
