@@ -102,13 +102,14 @@ class bleve{
 		$method=strtoupper($method);
 		if($method=="GET"){
 			$url .= empty($params)?"":"?".http_build_query($params);
+			curl_setopt(self::$ch, CURLOPT_POSTFIELDS, "");
 		}else{
 			if(is_array($post_data) || is_object($post_data)){
 				$post_data=json_encode($post_data);
 			}
-			curl_setopt(self::$ch, CURLOPT_CUSTOMREQUEST, $method);
 			curl_setopt(self::$ch, CURLOPT_POSTFIELDS, $post_data);
 		}
+		curl_setopt(self::$ch, CURLOPT_CUSTOMREQUEST, $method);
 		curl_setopt(self::$ch, CURLOPT_URL, $url);
 		curl_setopt(self::$ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt(self::$ch, CURLOPT_CONNECTTIMEOUT, 10);
