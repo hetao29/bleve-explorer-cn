@@ -114,9 +114,11 @@ class bleve{
 		curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 10);
 		curl_setopt($this->ch, CURLOPT_TIMEOUT, 10);
 		$data = curl_exec($this->ch);
-		var_dump($data);
 		$httpcode = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
 		$json_data = json_decode($data);
+		if($json_data == NULL){
+			print($data."\n");
+		}
 		return ($httpcode>=200 && $httpcode<300) ? ($json_data == NULL?$data:$json_data): false;
 	}
 }
