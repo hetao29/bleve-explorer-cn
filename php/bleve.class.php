@@ -37,9 +37,6 @@ class bleve{
 	public function getIndexCount($indexName){
 		return $this->get($this->gateway."/api/$indexName/_count");
 	}
-	public function getIndexFields($indexName){
-		return $this->get($this->gateway."/api/$indexName/_fields");
-	}
 	public function deleteIndex($indexName){
 		return $this->delete($this->gateway."/api/$indexName");
 	}
@@ -59,25 +56,89 @@ class bleve{
 	public function getDocument($indexName,$docID){
 		return $this->get($this->gateway."/api/$indexName/$docID");
 	}
-	public function getDocumentFields($indexName,$docID){
-		return $this->get($this->gateway."/api/$indexName/$docID/_fields");
-	}
 	public function getDocumentDebug($indexName,$docID){
 		return $this->get($this->gateway."/api/$indexName/$docID/_debug");
 	}
 	public function deleteDocument($indexName,$docID){
 		return $this->delete($this->gateway."/api/$indexName/$docID");
 	}
-	public function search($indexName,$query,$from=0,$size=10){
+	/**
+	 * @params string $indexName
+	 * @params string $query
+	 * @params array $field, * is all field
+	 * @params array $sort , filed, + prefix is asc, - is desc,like array("-id","+time")
+	 * @params array $facets 
+	 * $fields = array(
+		 "$name"=>array(
+			"field"=>"$field",
+			"size"=>$size,
+			//options 
+			"numeric_ranges"=>array(
+				array("name"=>"$name_x1","min"=>$min,"max"=>$max),
+				array("name"=>"$name_x1","min"=>$min,"max"=>$max),
+			),
+			//options
+			"date_ranges"=>array(
+				array("name"=>"$name_y1","start"=>"2010-10-12 00:00:00","end"=>"2027-10-10 00:00:00"),
+				array("name"=>"$name_y2","start"=>"2010-10-12 00:00:00","end"=>"2027-10-10 00:00:00"),
+			)
+		)
+	 */
+	public function search($indexName,$query,$fields=null,$sort=null,$facets=null,$from=0,$size=10){
+		$request= array(
+			"size"=>$size,
+			"from"=>$from,
+			"sort"=>$sort,
+			"explain"=>false,
+			"includeLocations"=>false,
+			"highlight"=>new stdclass,
+			"query"=>array("boost"=>1,"query"=>$query),
+			"fields"=>array("*"),
+		);
+		if($fields && is_array($fields)){
+			$request['fields']=$fields;
+		}
+		if($facets){
+			$request['facets']=$facets;
+		}
+		if($sort){
+			$request['sort']=$sort;
+		}
+		return $this->post($this->gateway."/api/$indexName/_search",$request);
+	}
+	public function searchFacets($indexName,$query,$from=0,$size=10){
 		$data = array(
 			"size"=>$size,
 			"from"=>$from,
-			"explain"=>true,
+			"sort"=>array("-id","time"),
+			"explain"=>false,
+			"includeLocations"=>false,
 			"highlight"=>new stdclass,
 			"query"=>array("boost"=>1,"query"=>$query),
-			"fields"=>array("*")
+			"fields"=>array("*"),
+			"facets"=>new stdclass
 		);
-
+		//
+		$data['facets']->xx=array(
+			"field"=>"id",
+			"size"=>1,
+		);
+		//
+		$data['facets']->styles=array(
+			"field"=>"id",
+			"size"=>1,
+			"numeric_ranges"=>array(
+				array("name"=>"xx","min"=>1,"max"=>3),
+			)
+		);
+		$data['facets']->t=array(
+			"field"=>"time",
+			"size"=>1,
+			"date_ranges"=>array(
+				array("name"=>"yy","start"=>"2010-10-12 00:00:00","end"=>"2027-10-10 00:00:00"),
+			)
+		);
+		print_r($data);
 		return $this->post($this->gateway."/api/$indexName/_search",$data);
 	}
 	/**
