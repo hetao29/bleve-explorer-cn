@@ -30,7 +30,7 @@ import (
 	_ "github.com/blevesearch/bleve/config"
 
 	bleveMappingUI "github.com/hetao29/bleve-mapping-ui"
-	_ "github.com/hetao29/blevesearch-cn/scws/bleve"
+	cn "github.com/hetao29/blevesearch-cn/scws/bleve"
 )
 
 //var bindAddr = flag.String("addr", ":8095", "http listen address")
@@ -95,6 +95,8 @@ func main() {
 	if config.Daemon {
 		daemon.Exec(daemon.Daemon)
 	}
+	cn.SetDict(getFilePath("dict/dict.utf8.xdb"));
+	cn.SetRule(getFilePath("dict/rules.utf8.ini"));
 
 	// walk the data dir and register index names
 	dirEntries, err := ioutil.ReadDir(config.DataDir)

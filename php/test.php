@@ -1,7 +1,7 @@
 <?php
 require_once("bleve.class.php");
 
-$bleve = new bleve("http://localhost:8095/","/data/bleve/dict/dict.utf8.xdb");
+$bleve = new bleve("http://localhost:8095/");
 //var_dump($bleve->getIndex("cn"));
 //print_r($bleve->deleteIndex("course"));
 print_r($bleve->createIndex("course"));

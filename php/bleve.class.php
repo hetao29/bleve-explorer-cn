@@ -10,30 +10,15 @@ class bleve{
 		"default_mapping"	=>array("enabled"=>true,"display_order"=>0),
 		"type_field"		=>"_type",
 		"default_type"		=>"_default",
-		"default_analyzer"	=>"scws",
+		"default_analyzer"	=>"cn",
 		"default_datetime_parser"=>"dateTimeOptional",
 		"default_field"=>"_all",
 		"byte_array_converter"=>"json",
 		"store_dynamic"		=>true,
 		"index_dynamic"		=>true,
-		"analysis"=>array(
-			"analyzers"=>array(
-				"scws"=>array(
-					"type"=>"custom",
-					"tokenizer"=>"scws"
-				)
-			),
-			"tokenizers"=>array(
-				"scws"=>array(
-					"dict"=>"/Users/hetal/dict/dict.utf8.xdb",
-					"type"=>"scws"
-				)
-			)
-		)
 	);
 
-	public function __construct($gateway,$dict){
-		$this->options['analysis']['tokenizers']['scws']['dict']=$dict;
+	public function __construct($gateway){
 		$slash = $gateway{strlen($gateway)-1};
 		$this->gateway = $slash!="/"?$gateway:chop($gateway,"/");
 	}
@@ -129,6 +114,7 @@ class bleve{
 		curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 10);
 		curl_setopt($this->ch, CURLOPT_TIMEOUT, 10);
 		$data = curl_exec($this->ch);
+		var_dump($data);
 		$httpcode = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
 		$json_data = json_decode($data);
 		return ($httpcode>=200 && $httpcode<300) ? ($json_data == NULL?$data:$json_data): false;
