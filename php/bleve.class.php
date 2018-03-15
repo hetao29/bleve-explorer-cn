@@ -47,6 +47,9 @@ class bleve{
 	/**
 	 * document
 	 */
+	public function batchDocuments($indexName,$batch){
+		return $this->post($this->gateway."/api/$indexName/_batch",$batch);
+	}
 	public function createDocument($indexName,$docID,$data){
 		return $this->put($this->gateway."/api/$indexName/$docID",$data);
 	}

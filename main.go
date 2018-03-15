@@ -20,6 +20,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	batch "github.com/hetao29/blevesearch-cn/batch"
 
 	"github.com/gorilla/mux"
 	"github.com/xgdapg/daemon"
@@ -182,6 +183,10 @@ func main() {
 	docCountHandler := bleveHttp.NewDocCountHandler("")
 	docCountHandler.IndexNameLookup = indexNameLookup
 	router.Handle("/api/{indexName}/_count", docCountHandler).Methods("GET")
+
+	docBatchHandler := batch.NewDocBatchHandler("")
+	docBatchHandler.IndexNameLookup = indexNameLookup
+	router.Handle("/api/{indexName}/_batch", docBatchHandler).Methods("POST")
 
 	docGetHandler := bleveHttp.NewDocGetHandler("")
 	docGetHandler.IndexNameLookup = indexNameLookup

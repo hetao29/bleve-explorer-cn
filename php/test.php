@@ -9,6 +9,12 @@ $bleve = new bleve("http://localhost:8095/");
 print_r($bleve->createIndex("goods"));
 //print_r($bleve->getIndexCount("course"));
 //print_r($bleve->getDocumentDebug("goods",1));
+print_r($bleve->batchDocuments("goods",array(
+	array("id"=>"30","doc"=>array("name"=>"我是中国人")),
+	array("id"=>"31","doc"=>array("name"=>"我是中国人")),
+)
+));
+print_r($bleve->search("goods","*",null,$sort,$facets));
 exit;
 /**
  *
